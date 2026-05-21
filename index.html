@@ -149,7 +149,7 @@
 </div>
 
 <div class="container">
-<form class="form-body" id="mainForm" name="kermesse" method="POST" action="/merci" netlify netlify-honeypot="bot-field" onsubmit="handleSubmit(event)">
+<form class="form-body" id="mainForm" name="kermesse" method="POST" action="/merci" netlify netlify-honeypot="bot-field">
   <input type="hidden" name="form-name" value="kermesse">
   <input type="hidden" name="langue" value="fr">
   <input type="hidden" name="nb_adultes" value="">
@@ -254,7 +254,7 @@
   </div>
 
   <div>
-    <button type="submit" class="sub-btn" data-i="submit"></button>
+    <button type="button" class="sub-btn" onclick="handleSubmit(event)" data-i="submit"></button>
     <p class="footer" data-i="footer_note"></p>
   </div>
 
@@ -527,7 +527,7 @@ function rt(){
 function toggleCheck(i){i.closest('.ci').classList.toggle('on',i.checked);}
 
 function handleSubmit(e){
-  e.preventDefault();
+  if(e) e.preventDefault();
   const form = document.getElementById('mainForm');
 
   // Disable button to prevent double submit
