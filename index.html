@@ -502,7 +502,7 @@ function setLang(l) {
   });
   // Re-render tarif with new labels
   rt();
-  refreshGaugeLang();
+  if (typeof refreshGaugeLang === 'function') refreshGaugeLang();
 }
 
 // TARIF
@@ -577,7 +577,14 @@ function handleSubmit(e){
     }).then(r => r.json()).then(data => updateGaugeUI(data.count)).catch(()=>{});
     showSuccess();
   })
-  .catch(() => showSuccess());
+  .catch(() => {
+    // Re-enable button so user can try again
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    // Still show success (Netlify may have received it)
+    showSuccess();
+  });
 }
 
 function showSuccess(){
@@ -669,8 +676,6 @@ function updateGaugeUI(count) {
   });
 }
 
-// Reload gauge when lang changes
-const _origSetLang = setLang;
 // Refresh gauge labels on lang switch
 function refreshGaugeLang() {
   const bar = document.getElementById('gauge-bar');
