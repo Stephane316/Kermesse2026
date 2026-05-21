@@ -149,7 +149,7 @@
 </div>
 
 <div class="container">
-<form class="form-body" id="mainForm" name="kermesse" method="POST" action="/" netlify netlify-honeypot="bot-field" onsubmit="handleSubmit(event)">
+<form class="form-body" id="mainForm" name="kermesse" method="POST" action="/merci" netlify netlify-honeypot="bot-field" onsubmit="handleSubmit(event)">
   <input type="hidden" name="form-name" value="kermesse">
   <input type="hidden" name="langue" value="fr">
   <input type="hidden" name="nb_adultes" value="">
@@ -530,69 +530,56 @@ function handleSubmit(e){
   e.preventDefault();
   const form = document.getElementById('mainForm');
 
-  // Prevent double submission
+  // Disable button to prevent double submit
   const btn = form.querySelector('.sub-btn');
   if (btn.disabled) return;
   btn.disabled = true;
   btn.style.opacity = '0.6';
   btn.style.cursor = 'not-allowed';
-  btn.textContent = '⏳ Envoi en cours…';
+  const t = T[lang];
+  btn.innerHTML = '⏳ ' + (lang === 'fr' ? 'Envoi en cours…' : lang === 'en' ? 'Sending…' : 'Mengirim…');
 
-  // Build payload
-  const payload = new URLSearchParams();
-  payload.append('form-name', 'kermesse');
-  payload.append('langue', lang);
-  payload.append('nb_adultes', s.a);
-  payload.append('nb_enfants', s.c);
-  payload.append('nb_bebes', s.b);
-  payload.append('total_rp', document.getElementById('td').textContent);
-  payload.append('spectacle_guignols', (form.querySelector('.gi input[type=checkbox]')||{}).checked ? 'Oui' : 'Non');
+  // Inject computed hidden fields
+  function setHidden(name, value) {
+    let el = form.querySelector('input[name="'+name+'"]');
+    if (!el) { el = document.createElement('input'); el.type='hidden'; el.name=name; form.appendChild(el); }
+    el.value = value;
+  }
 
-  // Named text inputs
+  setHidden('langue', lang);
+  setHidden('nb_adultes', s.a);
+  setHidden('nb_enfants', s.c);
+  setHidden('nb_bebes', s.b);
+  setHidden('total_rp', document.getElementById('td').textContent);
+  setHidden('spectacle_guignols', (form.querySelector('.gi input[type=checkbox]')||{}).checked ? 'Oui' : 'Non');
+
   const textInputs = form.querySelectorAll('input[type=text]:not([style*=display])');
-  payload.append('prenom', textInputs[0] ? textInputs[0].value : '');
-  payload.append('nom',    textInputs[1] ? textInputs[1].value : '');
-  payload.append('email',  (form.querySelector('input[type=email]')||{}).value || '');
-  payload.append('telephone', (form.querySelector('input[type=tel]')||{}).value || '');
-  payload.append('contraintes', (form.querySelector('textarea')||{}).value || '');
+  setHidden('prenom', textInputs[0] ? textInputs[0].value : '');
+  setHidden('nom',    textInputs[1] ? textInputs[1].value : '');
+  setHidden('email',  (form.querySelector('input[type=email]')||{}).value || '');
+  setHidden('telephone', (form.querySelector('input[type=tel]')||{}).value || '');
+  setHidden('contraintes', (form.querySelector('textarea')||{}).value || '');
 
-  // Children
   form.querySelectorAll('.enfant-block').forEach((b, i) => {
     const n = i+1;
-    payload.append('enfant_'+n+'_prenom', (b.querySelector('input[type=text]')||{}).value || '');
-    payload.append('enfant_'+n+'_classe', (b.querySelector('select')||{}).value || '');
+    setHidden('enfant_'+n+'_prenom', (b.querySelector('input[type=text]')||{}).value || '');
+    setHidden('enfant_'+n+'_classe', (b.querySelector('select')||{}).value || '');
   });
 
-  fetch('/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: payload.toString()
-  })
-  .then(() => {
-    // Increment counter with number of children
+  // Increment gauge counter
+  try {
     fetch('/.netlify/functions/counter', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ add: s.c })
     }).then(r => r.json()).then(data => updateGaugeUI(data.count)).catch(()=>{});
-    showSuccess();
-  })
-  .catch(() => {
-    // Re-enable button so user can try again
-    btn.disabled = false;
-    btn.style.opacity = '1';
-    btn.style.cursor = 'pointer';
-    // Still show success (Netlify may have received it)
-    showSuccess();
-  });
+  } catch(e) {}
+
+  // Native POST — Netlify handles it, redirects to /merci
+  form.submit();
 }
 
-function showSuccess(){
-  document.getElementById('mainForm').style.display='none';
-  const ok = document.getElementById('ok');
-  ok.style.display = 'block';
-  ok.scrollIntoView({ behavior: 'smooth' });
-}
+
 
 let ec=1;
 const CL=['TPS-PS','PS-MS','MS-GS','GSB','CP','CE1','CE2','CM1','CM2'];
