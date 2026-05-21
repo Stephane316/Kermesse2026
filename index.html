@@ -220,16 +220,6 @@
     </div>
   </div>
 
-  
-    <div class="field">
-      <label data-i="vol_q"></label>
-      <div class="rbg">
-        <label class="ri"><input type="radio" name="benv" value="oui" onchange="toggleRadio(this)"> <span data-i="vol_yes"></span></label>
-        <label class="ri"><input type="radio" name="benv" value="ptet" onchange="toggleRadio(this)"> <span data-i="vol_maybe"></span></label>
-        <label class="ri"><input type="radio" name="benv" value="non" onchange="toggleRadio(this)"> <span data-i="vol_no"></span></label>
-      </div>
-    </div>
-
   </div>
 
   <!-- JAUGE -->
@@ -241,9 +231,7 @@
     <div style="background:var(--border);border-radius:20px;height:22px;overflow:hidden;border:2px solid var(--ink);">
       <div id="gauge-bar" style="height:100%;border-radius:20px;transition:width 0.6s ease;background:var(--green);width:0%"></div>
     </div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--ink-light);margin-top:4px;">
-      <span>0</span><span>250</span>
-    </div>
+
     <div id="gauge-msg" style="font-size:12px;font-weight:700;text-align:center;margin-top:6px;"></div>
   </div>
 
@@ -318,11 +306,6 @@ Des questions ou envie d'être bénévole ? Écrivez-nous à : <a href="mailto:e
     puppet_q:"Souhaitez-vous assister au spectacle des Guignols ?",
     puppet_yes:"Oui, je souhaite assister au spectacle des Guignols (15h45 — gymnase des maternelles)",
     puppet_warn:"⚠️ Places limitées — priorité aux enfants. Les parents sont invités à patienter à l'extérieur.",
-    s4title:"Bénévolat",
-    vol_q:"Souhaitez-vous aider lors de la kermesse ?",
-    vol_yes:"Oui, avec plaisir !",
-    vol_maybe:"Peut-être",
-    vol_no:"Non merci",
     vol_area:"Dans quel domaine ?",
     vol_setup:"Installation / montage",
     vol_anim:"Animation d'atelier",
@@ -345,7 +328,7 @@ Des questions ou envie d'être bénévole ? Écrivez-nous à : <a href="mailto:e
     success_title:"Inscription confirmée !",
     success_sub:"Merci ! Vous recevrez un email de confirmation sous peu.<br>Rendez-vous à la kermesse — on vous attend !",
     gauge_title:"Places disponibles",
-    gauge_remaining:(r)=>`${r} places restantes sur 250`,
+    gauge_remaining:(r)=>`${r} places restantes`,
     gauge_full:"⚠️ Plus de places disponibles !",
     gauge_hurry:"🔥 Dépêchez-vous, presque complet !",
     base_label:"Forfait de base (1 adulte + 1 enfant)",
@@ -391,11 +374,6 @@ Questions or want to volunteer? Write to us: <a href="mailto:events@frenchschool
     puppet_q:"Would you like to attend the Puppet Show?",
     puppet_yes:"Yes, I would like to attend the Puppet Show (3:45 PM — kindergarten gym)",
     puppet_warn:"⚠️ Limited seats — children have priority. Parents are invited to wait outside.",
-    s4title:"Volunteering",
-    vol_q:"Would you like to help during the event?",
-    vol_yes:"Yes, with pleasure!",
-    vol_maybe:"Maybe",
-    vol_no:"No thank you",
     vol_area:"In which area?",
     vol_setup:"Setup / installation",
     vol_anim:"Workshop facilitation",
@@ -418,7 +396,7 @@ Questions or want to volunteer? Write to us: <a href="mailto:events@frenchschool
     success_title:"Registration confirmed!",
     success_sub:"Thank you! You will receive a confirmation email shortly.<br>See you at the kermesse — we can't wait!",
     gauge_title:"Available spots",
-    gauge_remaining:(r)=>`${r} spots left out of 250`,
+    gauge_remaining:(r)=>`${r} spots left`,
     gauge_full:"⚠️ No spots left!",
     gauge_hurry:"🔥 Hurry, almost full!",
     base_label:"Base package (1 adult + 1 child)",
@@ -464,11 +442,6 @@ Pertanyaan atau ingin jadi relawan? Hubungi kami: <a href="mailto:events@frenchs
     puppet_q:"Apakah Anda ingin menonton Pertunjukan Wayang?",
     puppet_yes:"Ya, saya ingin menonton Pertunjukan Wayang (15.45 — gimnasium TK)",
     puppet_warn:"⚠️ Tempat terbatas — prioritas untuk anak-anak. Orang tua dimohon menunggu di luar.",
-    s4title:"Relawan",
-    vol_q:"Apakah Anda ingin membantu selama acara?",
-    vol_yes:"Ya, dengan senang hati!",
-    vol_maybe:"Mungkin",
-    vol_no:"Tidak, terima kasih",
     vol_area:"Di bidang apa?",
     vol_setup:"Pemasangan / instalasi",
     vol_anim:"Fasilitasi lokakarya",
@@ -491,7 +464,7 @@ Pertanyaan atau ingin jadi relawan? Hubungi kami: <a href="mailto:events@frenchs
     success_title:"Pendaftaran dikonfirmasi!",
     success_sub:"Terima kasih! Anda akan menerima email konfirmasi segera.<br>Sampai jumpa di kermesse — kami menantikan kedatangan Anda!",
     gauge_title:"Tempat tersedia",
-    gauge_remaining:(r)=>`${r} tempat tersisa dari 250`,
+    gauge_remaining:(r)=>`${r} tempat tersisa`,
     gauge_full:"⚠️ Tidak ada tempat tersisa!",
     gauge_hurry:"🔥 Cepat, hampir penuh!",
     base_label:"Paket dasar (1 dewasa + 1 anak)",
@@ -552,7 +525,6 @@ function rt(){
 }
 
 function toggleCheck(i){i.closest('.ci').classList.toggle('on',i.checked);}
-function toggleRadio(i){document.querySelectorAll('.ri').forEach(r=>r.classList.remove('on'));i.closest('.ri').classList.add('on');}
 
 function handleSubmit(e){
   e.preventDefault();
@@ -575,7 +547,6 @@ function handleSubmit(e){
   payload.append('nb_bebes', s.b);
   payload.append('total_rp', document.getElementById('td').textContent);
   payload.append('spectacle_guignols', (form.querySelector('.gi input[type=checkbox]')||{}).checked ? 'Oui' : 'Non');
-  payload.append('benevolat', (form.querySelector('input[name=benv]:checked')||{}).value || 'Non renseigné');
 
   // Named text inputs
   const textInputs = form.querySelectorAll('input[type=text]:not([style*=display])');
@@ -679,7 +650,7 @@ function updateGaugeUI(count) {
     bar.style.background = '#6BCB77';
   }
 
-  countEl.textContent = remaining + ' / ' + GAUGE_MAX;
+  countEl.textContent = remaining;
 
   if (pct >= 100) {
     msgEl.textContent = t.gauge_full;
