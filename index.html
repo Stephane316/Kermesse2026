@@ -477,6 +477,17 @@ Pertanyaan atau ingin jadi relawan? Hubungi kami: <a href="mailto:events@frenchs
 
 let lang = 'fr';
 
+const GAUGE_MAX = 250;
+
+// Refresh gauge labels on lang switch
+function refreshGaugeLang() {
+  const bar = document.getElementById('gauge-bar');
+  if (!bar) return;
+  const pct = parseFloat(bar.style.width) || 0;
+  const count = Math.round((pct / 100) * GAUGE_MAX);
+  updateGaugeUI(count);
+}
+
 function setLang(l) {
   lang = l;
   document.querySelectorAll('.lang-btn').forEach((b,i)=>{
@@ -605,9 +616,6 @@ function rmEnfant(btn){
 // Init
 setLang('fr');
 
-// ── Gauge ────────────────────────────────────────
-const GAUGE_MAX = 250;
-
 async function loadGauge() {
   try {
     const res = await fetch('/.netlify/functions/counter');
@@ -663,14 +671,6 @@ function updateGaugeUI(count) {
   });
 }
 
-// Refresh gauge labels on lang switch
-function refreshGaugeLang() {
-  const bar = document.getElementById('gauge-bar');
-  if (!bar) return;
-  const pct = parseFloat(bar.style.width) || 0;
-  const count = Math.round((pct / 100) * GAUGE_MAX);
-  updateGaugeUI(count);
-}
 
 loadGauge();
 </script>
